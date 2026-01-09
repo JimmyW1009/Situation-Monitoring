@@ -47,6 +47,11 @@
             <h4>Associated Press (@AP)</h4>
             <a class="twitter-timeline" data-height="600" href="https://twitter.com/AP?ref_src=twsrc%5Etfw">Tweets by AP</a>
         </div>
+        <h3>Live Worldwide Events Feed</h3>
+        <div>
+            <h4>Breaking News & Unfolding Events</h4>
+            <a class="twitter-timeline" data-height="600" href="https://twitter.com/search?q=breaking%20news%20OR%20world%20events%20OR%20crisis%20-filter:retweets%20min_faves:5&src=typed_query&f=live">Live Events on X</a>
+        </div>
     </section>
     
     <section id="rss-feeds">
@@ -73,6 +78,20 @@
         <div>
             <h4>Guardian World News</h4>
             <div id="guardian-world" class="feed-container"></div>
+        </div>
+    </section>
+
+    <section id="embedded-feeds">
+        <h2>Embedded Live Feeds</h2>
+        <h3>Live VicEmergency Feed</h3>
+        <div>
+            <iframe src="https://emergency.vic.gov.au/" height="600" width="100%" frameborder="0"></iframe>
+            <p>Note: If the embed doesn't load due to site restrictions, visit <a href="https://emergency.vic.gov.au/" target="_blank">VicEmergency</a> directly.</p>
+        </div>
+        <h3>Live Weather Alerts for Australia (BOM)</h3>
+        <div>
+            <iframe src="http://www.bom.gov.au/australia/warnings/" height="600" width="100%" frameborder="0"></iframe>
+            <p>Note: If the embed doesn't load due to site restrictions, visit <a href="http://www.bom.gov.au/australia/warnings/" target="_blank">BOM Australia Warnings</a> directly.</p>
         </div>
     </section>
     
@@ -102,14 +121,17 @@
                 });
         }
 
-        // Load feeds on page load
-        window.onload = function() {
+        // Load feeds on page load and refresh every 5 minutes
+        function refreshFeeds() {
             loadRSS('https://data.emergency.vic.gov.au/Show?pageId=getIncidentRSS', 'vic-incidents');
             loadRSS('https://www.bom.gov.au/fwo/IDZ00059.warnings_vic.xml', 'bom-warnings');
             loadRSS('https://news.un.org/feed/subscribe/en/news/all/rss.xml', 'un-top');
             loadRSS('https://rss.nytimes.com/services/xml/rss/nyt/World.xml', 'nyt-world');
             loadRSS('https://www.theguardian.com/world/rss', 'guardian-world');
-        };
+        }
+
+        window.onload = refreshFeeds;
+        setInterval(refreshFeeds, 300000); // 5 minutes
     </script>
 </body>
 </html>

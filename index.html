@@ -8,7 +8,6 @@
         body { font-family: Arial, sans-serif; margin: 20px; background: #000000; color: #FFFFFF; }
         section { margin-bottom: 40px; }
         .feed-container { border: 1px solid #FFFFFF; padding: 10px; margin: 10px 0; height: 400px; overflow-y: auto; background: #111111; }
-        .twitter-timeline { max-width: 100%; height: 350px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .tile { border: 1px solid #FFFFFF; padding: 10px; background: #333333; }
         .tile img { width: 50px; height: 50px; border-radius: 50%; display: block; margin: 0 auto 10px; }
@@ -23,80 +22,42 @@
     <h1>Monitoring Dashboard</h1>
     
     <section id="x-feeds">
-        <h2>X Feeds</h2>
+        <h2>X Feeds (via RSS)</h2>
         <div class="grid">
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/918571742181568512/1LgkB7ua_400x400.jpg" alt="VicEmergency logo">
                 <h4>VicEmergency (@vicemergency)</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/vicemergency?ref_src=twsrc%5Etfw">Posts by vicemergency</a>
-                </div>
+                <div id="vicemergency-feed" class="feed-container"></div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/1353996799834632193/R27JeevD_400x400.jpg" alt="BOM_au logo">
                 <h4>Bureau of Meteorology (@BOM_au)</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/BOM_au?ref_src=twsrc%5Etfw">Posts by BOM_au</a>
-                </div>
+                <div id="bom-au-feed" class="feed-container"></div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/1150718511113129984/7Adgo6B4_400x400.jpg" alt="BBCBreaking logo">
                 <h4>BBC Breaking News (@BBCBreaking)</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/BBCBreaking?ref_src=twsrc%5Etfw">Posts by BBCBreaking</a>
-                </div>
+                <div id="bbcbreaking-feed" class="feed-container"></div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/1194751943877791744/poza4IZp_400x400.jpg" alt="Reuters logo">
                 <h4>Reuters (@Reuters)</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/Reuters?ref_src=twsrc%5Etfw">Posts by Reuters</a>
-                </div>
+                <div id="reuters-feed" class="feed-container"></div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/1098244578472280064/gjkVMelR_400x400.png" alt="nytimes logo">
                 <h4>The New York Times (@nytimes)</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/nytimes?ref_src=twsrc%5Etfw">Posts by nytimes</a>
-                </div>
+                <div id="nytimes-feed" class="feed-container"></div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/925742452901625856/j0hrpQv4_400x400.jpg" alt="cnnbrk logo">
                 <h4>CNN Breaking News (@cnnbrk)</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/cnnbrk?ref_src=twsrc%5Etfw">Posts by cnnbrk</a>
-                </div>
+                <div id="cnnbrk-feed" class="feed-container"></div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/508871804624896004/yQ2ZxcrA_400x400.png" alt="AP logo">
                 <h4>Associated Press (@AP)</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/AP?ref_src=twsrc%5Etfw">Posts by AP</a>
-                </div>
-            </div>
-            <div class="tile">
-                <h4>Breaking News & Unfolding Events</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/search?q=breaking%20news%20OR%20world%20events%20OR%20crisis%20-filter:retweets%20min_faves:5&src=typed_query&f=live">Live Events on X</a>
-                </div>
-            </div>
-            <div class="tile">
-                <h4>Geopolitical Events</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/search?q=geopolitics%20OR%20conflict%20OR%20international%20crisis%20-filter:retweets%20min_faves:5&src=typed_query&f=live">Geopolitical on X</a>
-                </div>
-            </div>
-            <div class="tile">
-                <h4>Technology & AI</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/search?q=AI%20OR%20technology%20breakthrough%20OR%20tech%20news%20-filter:retweets%20min_faves:5&src=typed_query&f=live">Tech/AI on X</a>
-                </div>
-            </div>
-            <div class="tile">
-                <h4>Financial Markets</h4>
-                <div style="height: 350px; overflow-y: auto;">
-                    <a class="twitter-timeline" data-height="350" href="https://twitter.com/search?q=financial%20markets%20OR%20stock%20market%20OR%20economy%20-filter:retweets%20min_faves:5&src=typed_query&f=live">Financial on X</a>
-                </div>
+                <div id="ap-feed" class="feed-container"></div>
             </div>
         </div>
     </section>
@@ -124,6 +85,14 @@
                 <h4>Economic News</h4>
                 <div id="economic-news" class="feed-container"></div>
             </div>
+            <div class="tile">
+                <h4>Breaking News & Unfolding Events</h4>
+                <div id="breaking-news" class="feed-container"></div>
+            </div>
+            <div class="tile">
+                <h4>Geopolitical Events</h4>
+                <div id="geopolitical-news" class="feed-container"></div>
+            </div>
         </div>
     </section>
 
@@ -136,15 +105,39 @@
                 <p>Note: If the embed doesn't load due to site restrictions, visit <a href="https://emergency.vic.gov.au/" target="_blank">VicEmergency</a> directly.</p>
             </div>
             <div class="tile span-two">
-                <h4>Australian Wide Weather Radar</h4>
-                <iframe src="http://www.bom.gov.au/australia/radar/" height="400" width="100%" frameborder="0"></iframe>
-                <p>Note: If the embed doesn't load due to site restrictions, visit <a href="http://www.bom.gov.au/australia/radar/" target="_blank">BOM Australia Radar</a> directly.</p>
+                <h4>Australian Wide Weather Radar (The Weather Chaser)</h4>
+                <iframe src="https://theweatherchaser.com/radar/" height="400" width="100%" frameborder="0"></iframe>
+                <p>Note: If the embed doesn't load due to site restrictions, visit <a href="https://theweatherchaser.com/radar/" target="_blank">The Weather Chaser Radar</a> directly.</p>
             </div>
         </div>
     </section>
     
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
     <script>
+        function loadRSS(url, containerId) {
+            const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+            fetch(proxy)
+                .then(response => response.json())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(data.contents, 'text/xml');
+                    const items = xml.querySelectorAll('item');
+                    let html = '';
+                    items.forEach(item => {
+                        const title = item.querySelector('title')?.textContent || '';
+                        const link = item.querySelector('link')?.textContent || '';
+                        const desc = item.querySelector('description')?.textContent || '';
+                        const pubDate = item.querySelector('pubDate')?.textContent || '';
+                        const dateAEST = new Date(pubDate).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' });
+                        html += `<div><h3><a href="${link}" target="_blank">${title}</a></h3><p>${desc}</p><small>${dateAEST} AEST</small></div><hr>`;
+                    });
+                    document.getElementById(containerId).innerHTML = html || '<p>No recent items.</p>';
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById(containerId).innerHTML = '<p>Error loading feed.</p>';
+                });
+        }
+
         function loadEarthquakes() {
             fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson')
                 .then(response => response.json())
@@ -152,7 +145,8 @@
                     let html = '';
                     data.features.forEach(feature => {
                         const props = feature.properties;
-                        html += `<div><h3>${props.title}</h3><p>Magnitude: ${props.mag}, Time: ${new Date(props.time).toLocaleString()}</p><a href="${props.url}" target="_blank">Details</a><hr></div>`;
+                        const timeAEST = new Date(props.time).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' });
+                        html += `<div><h3>${props.title}</h3><p>Magnitude: ${props.mag}, Time: ${timeAEST} AEST</p><a href="${props.url}" target="_blank">Details</a><hr></div>`;
                     });
                     document.getElementById('earthquakes').innerHTML = html || '<p>No recent earthquakes.</p>';
                 })
@@ -166,9 +160,10 @@
                 .then(response => response.json())
                 .then(data => {
                     let html = '';
+                    const nowAEST = new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' });
                     for (const [coin, info] of Object.entries(data)) {
-                        html += `<div><h3>${coin.toUpperCase()}</h3><p>Price: $${info.usd}, Change: ${info.usd_24h_change.toFixed(2)}%</p><hr></div>`;
-                    }
+                        html += `<div><h3>${coin.toUpperCase()}</h3><p>Price: $${info.usd}, Change: ${info.usd_24h_change.toFixed(2)}%</p><small>Updated: ${nowAEST} AEST</small><hr></div>`;
+                    });
                     document.getElementById('crypto-prices').innerHTML = html || '<p>No data.</p>';
                 })
                 .catch(error => {
@@ -177,13 +172,14 @@
         }
 
         function loadGDELTNews(query, containerId) {
-            const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(query)}&mode=artlist&maxrecords=10&format=json&sort=date`;
+            const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(query)}&mode=artlist&maxrecords=10&format=json&sort=date&lang=english`;
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     let html = '';
                     data.articles.forEach(article => {
-                        html += `<div><h3><a href="${article.url}" target="_blank">${article.title}</a></h3><p>${article.seendate}</p><hr></div>`;
+                        const dateAEST = new Date(article.seendate).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' });
+                        html += `<div><h3><a href="${article.url}" target="_blank">${article.title}</a></h3><p>${dateAEST} AEST</p><hr></div>`;
                     });
                     document.getElementById(containerId).innerHTML = html || '<p>No recent articles.</p>';
                 })
@@ -194,11 +190,20 @@
 
         // Load feeds on page load and refresh every 5 minutes
         function refreshFeeds() {
+            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=vicemergency', 'vicemergency-feed');
+            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=BOM_au', 'bom-au-feed');
+            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=BBCBreaking', 'bbcbreaking-feed');
+            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=Reuters', 'reuters-feed');
+            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=nytimes', 'nytimes-feed');
+            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=cnnbrk', 'cnnbrk-feed');
+            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=AP', 'ap-feed');
             loadEarthquakes();
             loadCryptoPrices();
             loadGDELTNews('(politics OR government OR congress)', 'politics-news');
             loadGDELTNews('(technology OR AI OR innovation)', 'tech-news');
             loadGDELTNews('(economy OR finance OR markets)', 'economic-news');
+            loadGDELTNews('(breaking news OR crisis OR unfolding events)', 'breaking-news');
+            loadGDELTNews('(geopolitics OR conflict OR international crisis)', 'geopolitical-news');
         }
 
         window.onload = refreshFeeds;

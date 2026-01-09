@@ -16,48 +16,63 @@
         a { color: #D3D3D3; }
         p { color: #FFFFFF; }
         .span-two { grid-column: span 2; }
+        .twitter-timeline { max-width: 100%; height: 350px; }
     </style>
 </head>
 <body>
     <h1>Monitoring Dashboard</h1>
     
     <section id="x-feeds">
-        <h2>X Feeds (via RSS)</h2>
+        <h2>X Feeds</h2>
         <div class="grid">
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/918571742181568512/1LgkB7ua_400x400.jpg" alt="VicEmergency logo">
                 <h4>VicEmergency (@vicemergency)</h4>
-                <div id="vicemergency-feed" class="feed-container"></div>
+                <div style="height: 350px; overflow-y: auto;">
+                    <a class="twitter-timeline" data-height="350" href="https://x.com/vicemergency">Posts by vicemergency</a>
+                </div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/1353996799834632193/R27JeevD_400x400.jpg" alt="BOM_au logo">
                 <h4>Bureau of Meteorology (@BOM_au)</h4>
-                <div id="bom-au-feed" class="feed-container"></div>
+                <div style="height: 350px; overflow-y: auto;">
+                    <a class="twitter-timeline" data-height="350" href="https://x.com/BOM_au">Posts by BOM_au</a>
+                </div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/1150718511113129984/7Adgo6B4_400x400.jpg" alt="BBCBreaking logo">
                 <h4>BBC Breaking News (@BBCBreaking)</h4>
-                <div id="bbcbreaking-feed" class="feed-container"></div>
+                <div style="height: 350px; overflow-y: auto;">
+                    <a class="twitter-timeline" data-height="350" href="https://x.com/BBCBreaking">Posts by BBCBreaking</a>
+                </div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/1194751943877791744/poza4IZp_400x400.jpg" alt="Reuters logo">
                 <h4>Reuters (@Reuters)</h4>
-                <div id="reuters-feed" class="feed-container"></div>
+                <div style="height: 350px; overflow-y: auto;">
+                    <a class="twitter-timeline" data-height="350" href="https://x.com/Reuters">Posts by Reuters</a>
+                </div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/1098244578472280064/gjkVMelR_400x400.png" alt="nytimes logo">
                 <h4>The New York Times (@nytimes)</h4>
-                <div id="nytimes-feed" class="feed-container"></div>
+                <div style="height: 350px; overflow-y: auto;">
+                    <a class="twitter-timeline" data-height="350" href="https://x.com/nytimes">Posts by nytimes</a>
+                </div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/925742452901625856/j0hrpQv4_400x400.jpg" alt="cnnbrk logo">
                 <h4>CNN Breaking News (@cnnbrk)</h4>
-                <div id="cnnbrk-feed" class="feed-container"></div>
+                <div style="height: 350px; overflow-y: auto;">
+                    <a class="twitter-timeline" data-height="350" href="https://x.com/cnnbrk">Posts by cnnbrk</a>
+                </div>
             </div>
             <div class="tile">
                 <img src="https://pbs.twimg.com/profile_images/508871804624896004/yQ2ZxcrA_400x400.png" alt="AP logo">
                 <h4>Associated Press (@AP)</h4>
-                <div id="ap-feed" class="feed-container"></div>
+                <div style="height: 350px; overflow-y: auto;">
+                    <a class="twitter-timeline" data-height="350" href="https://x.com/AP">Posts by AP</a>
+                </div>
             </div>
         </div>
     </section>
@@ -116,14 +131,15 @@
         </div>
     </section>
     
+    <script async src="https://platform.x.com/widgets.js" charset="utf-8"></script>
     <script>
         function loadRSS(url, containerId) {
-            const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+            const proxy = 'https://cors-anywhere.herokuapp.com/' + url; // Switched to a different proxy for reliability
             fetch(proxy)
-                .then(response => response.json())
+                .then(response => response.text())
                 .then(data => {
                     const parser = new DOMParser();
-                    const xml = parser.parseFromString(data.contents, 'text/xml');
+                    const xml = parser.parseFromString(data, 'text/xml');
                     const items = xml.querySelectorAll('item');
                     let html = '';
                     items.forEach(item => {
@@ -138,7 +154,7 @@
                 })
                 .catch(error => {
                     console.error(error);
-                    document.getElementById(containerId).innerHTML = '<p>Error loading feed.</p>';
+                    document.getElementById(containerId).innerHTML = '<p>Error loading feed. Check console for details.</p>';
                 });
         }
 
@@ -192,15 +208,8 @@
                 });
         }
 
-        // Load feeds on page load and refresh every 5 minutes
+        // Load feeds on page load and refresh every 1 minute
         function refreshFeeds() {
-            loadRSS('https://openrss.org/twitter.com/vicemergency', 'vicemergency-feed');
-            loadRSS('https://openrss.org/twitter.com/BOM_au', 'bom-au-feed');
-            loadRSS('https://openrss.org/twitter.com/BBCBreaking', 'bbcbreaking-feed');
-            loadRSS('https://openrss.org/twitter.com/Reuters', 'reuters-feed');
-            loadRSS('https://openrss.org/twitter.com/nytimes', 'nytimes-feed');
-            loadRSS('https://openrss.org/twitter.com/cnnbrk', 'cnnbrk-feed');
-            loadRSS('https://openrss.org/twitter.com/AP', 'ap-feed');
             loadRSS('https://www.rfs.nsw.gov.au/feeds/majorIncidents.xml', 'bushfire-feed');
             loadEarthquakes();
             loadCryptoPrices();
@@ -212,7 +221,7 @@
         }
 
         window.onload = refreshFeeds;
-        setInterval(refreshFeeds, 300000); // 5 minutes
+        setInterval(refreshFeeds, 60000); // 1 minute
     </script>
 </body>
 </html>

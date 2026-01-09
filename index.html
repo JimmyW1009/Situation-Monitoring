@@ -1,336 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Monitoring Dashboard</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      integrity="sha256-sA+e2kP3fQ1f1gqXnq6k4sA1Qb0u6V6j2H0f6k6FJ3M=" crossorigin=""/>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background: #000000; color: #FFFFFF; }
-        section { margin-bottom: 40px; }
-        .feed-container { border: 1px solid #FFFFFF; padding: 10px; margin: 10px 0; height: 400px; overflow-y: auto; background: #111111; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .tile { border: 1px solid #FFFFFF; padding: 10px; background: #333333; }
-        .tile img { width: 50px; height: 50px; border-radius: 50%; display: block; margin: 0 auto 10px; }
-        h1, h2, h3, h4 { color: #FFFFFF; }
-        a { color: #D3D3D3; }
-        p { color: #FFFFFF; }
-        .span-two { grid-column: span 2; }
-        .twitter-timeline { max-width: 100%; height: 350px; }
-        .embed-fallback { margin-top: 8px; color: #ddd; font-size: 0.9em; }
-        #map-earthquakes, #map-bushfires { height: 400px; border: 1px solid #222; background: #000; }
-        .item-small { margin-bottom: 8px; }
-        .muted { color: #bbb; font-size: 0.9em; }
-    </style>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Monitoring Dashboard</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-sA+e2kP3fQ1f1gqXnq6k4sA1Qb0u6V6j2H0f6k6FJ3M=" crossorigin=""/>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; background: #000; color: #fff; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .tile { border: 1px solid #fff; padding: 10px; background: #222; }
+    #map-earthquakes, #map-bushfires { height: 400px; border: 1px solid #222; background: #000; }
+    .muted { color:#bbb; font-size:0.9em; }
+  </style>
 </head>
 <body>
-    <h1>Monitoring Dashboard</h1>
+  <h1>Monitoring Dashboard</h1>
 
-    <section id="x-feeds">
-        <h2>X Feeds (rendered via RSS)</h2>
-        <div class="grid">
-            <div class="tile">
-                <img src="https://pbs.twimg.com/profile_images/918571742181568512/1LgkB7ua_400x400.jpg" alt="VicEmergency logo">
-                <h4>VicEmergency (@vicemergency)</h4>
-                <div id="vicemergency-feed" class="feed-container">Loading...</div>
-            </div>
-            <div class="tile">
-                <img src="https://pbs.twimg.com/profile_images/1353996799834632193/R27JeevD_400x400.jpg" alt="BOM_au logo">
-                <h4>Bureau of Meteorology (@BOM_au)</h4>
-                <div id="bom-feed" class="feed-container">Loading...</div>
-            </div>
-            <div class="tile">
-                <img src="https://pbs.twimg.com/profile_images/1150718511113129984/7Adgo6B4_400x400.jpg" alt="BBCBreaking logo">
-                <h4>BBC Breaking News (@BBCBreaking)</h4>
-                <div id="bbc-feed" class="feed-container">Loading...</div>
-            </div>
-            <div class="tile">
-                <img src="https://pbs.twimg.com/profile_images/1194751943877791744/poza4IZp_400x400.jpg" alt="Reuters logo">
-                <h4>Reuters (@Reuters)</h4>
-                <div id="reuters-feed" class="feed-container">Loading...</div>
-            </div>
-        </div>
-    </section>
+  <section>
+    <h2>Maps (no iframes) + Radar Overlay</h2>
+    <div class="grid">
+      <div class="tile">
+        <h3>Earthquakes (map + list)</h3>
+        <div id="earthquakes" style="height:200px; overflow:auto;" class="muted"></div>
+        <div id="map-earthquakes"></div>
+      </div>
+      <div class="tile">
+        <h3>Bushfires (map + list)</h3>
+        <div id="bushfire-list" style="height:200px; overflow:auto;" class="muted"></div>
+        <div id="map-bushfires"></div>
+      </div>
+    </div>
+    <p class="muted">Radar overlay: RainViewer (public tiles, no API key required). Use the layer control to toggle radar. If the radar doesn't appear, check console network errors.</p>
+  </section>
 
-    <section id="additional-feeds">
-        <h2>Additional Data Feeds</h2>
-        <div class="grid">
-            <div class="tile">
-                <h4>Recent Earthquakes (M4.5+)</h4>
-                <div id="earthquakes" class="feed-container"></div>
-                <div id="map-earthquakes" class="muted"></div>
-            </div>
-            <div class="tile">
-                <h4>Crypto Prices</h4>
-                <div id="crypto-prices" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>Politics News</h4>
-                <div id="politics-news" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>Technology News</h4>
-                <div id="tech-news" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>Economic News</h4>
-                <div id="economic-news" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>Breaking News & Unfolding Events</h4>
-                <div id="breaking-news" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>Geopolitical Events</h4>
-                <div id="geopolitical-news" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>Australian Bushfire Feed (NSW RFS)</h4>
-                <div id="bushfire-feed" class="feed-container">Loading...</div>
-                <div id="map-bushfires" class="muted"></div>
-            </div>
-        </div>
-    </section>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-XXXXXXXXXXXXX" crossorigin=""></script>
 
-    <section id="embedded-feeds">
-        <h2>Interactive Maps (no iframes)</h2>
-        <div class="grid">
-            <div class="tile span-two">
-                <h4>Maps: earthquakes + bushfires (OpenStreetMap + Leaflet)</h4>
-                <p class="muted">If you need the original site, links are provided in the feed tiles.</p>
-            </div>
-        </div>
-    </section>
+  <script>
+    // After you deploy the worker, set: PROXY_BASE = 'https://your-worker.workers.dev?url='
+    const PROXY_BASE = 'REPLACE_WITH_YOUR_WORKER_URL?url=';
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      integrity="sha256-XXXXXXXXXXXXX" crossorigin=""></script>
+    function proxyUrl(url) {
+      if (!PROXY_BASE || PROXY_BASE.startsWith('REPLACE')) {
+        // Temporary fallback for quick local testing:
+        return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
+      }
+      return PROXY_BASE + encodeURIComponent(url);
+    }
 
-    <script>
-        // IMPORTANT: deploy the worker first and set PROXY_BASE to your worker endpoint.
-        // Example: const PROXY_BASE = 'https://your-worker.workers.dev?url=';
-        const PROXY_BASE = 'REPLACE_WITH_YOUR_WORKER_URL?url=';
+    // Leaflet map init
+    const eqMap = L.map('map-earthquakes').setView([-25, 133], 4);
+    const bushMap = L.map('map-bushfires').setView([-33.86, 151.2], 5);
+    const tiles = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    L.tileLayer(tiles, { attribution: '&copy; OpenStreetMap contributors' }).addTo(eqMap);
+    L.tileLayer(tiles, { attribution: '&copy; OpenStreetMap contributors' }).addTo(bushMap);
 
-        if (PROXY_BASE.startsWith('REPLACE')) {
-            console.warn('PROXY_BASE not set. RSS/GDELT/other proxied requests will fail unless you deploy a worker and set PROXY_BASE.');
+    // Radar overlay via RainViewer (no API key)
+    // We'll fetch maps.json to get the latest timestamps then add the most recent radar layer
+    async function addRainViewerOverlay(map, layerName = 'RainViewer Radar') {
+      try {
+        const resp = await fetch('https://api.rainviewer.com/public/maps.json');
+        if (!resp.ok) throw new Error('RainViewer maps.json fetch failed: ' + resp.status);
+        const json = await resp.json();
+        // json.radar.timestamps is an array of UNIX timestamps (seconds)
+        const timestamps = json.radar && json.radar.past || json.radar || json;
+        // RainViewer v2 uses json.radar.past (array)
+        const times = Array.isArray(timestamps) ? timestamps : (json.radar && json.radar.past ? json.radar.past : []);
+        if (!times.length) {
+          console.warn('RainViewer returned no timestamps', json);
+          return null;
         }
+        // choose the latest timestamp
+        const latest = times[times.length - 1];
+        // Tile URL format:
+        const tileUrl = `https://tile.rainviewer.com/v2/radar/${latest}/{z}/{x}/{y}.png`;
+        const radarLayer = L.tileLayer(tileUrl, { opacity: 0.5, attribution: '&copy; RainViewer' });
+        // Add to map but not displayed by default - return layer to be added to control
+        return { layer: radarLayer, label: layerName };
+      } catch (err) {
+        console.warn('Failed to add RainViewer overlay', err);
+        return null;
+      }
+    }
 
-        function proxyUrl(url) {
-            if (!PROXY_BASE || PROXY_BASE.startsWith('REPLACE')) {
-                // Fallback to AllOrigins for quick testing (may be rate-limited)
-                return 'https://api.allorigins.win/raw?url=' + encodeURIComponent(url);
-            }
-            return PROXY_BASE + encodeURIComponent(url);
+    // Add radar overlays to both maps and a layer control
+    (async function() {
+      const overlayPromises = [
+        addRainViewerOverlay(eqMap),
+        addRainViewerOverlay(bushMap)
+      ];
+      const overlays = await Promise.all(overlayPromises);
+      // Add first overlay to eqMap and bushMap
+      const controls = {};
+      overlays.forEach((o, i) => {
+        if (!o) return;
+        if (i === 0) {
+          o.layer.addTo(eqMap);
+          controls[o.label + ' (Earthquakes)'] = o.layer;
+        } else {
+          o.layer.addTo(bushMap);
+          controls[o.label + ' (Bushfires)'] = o.layer;
         }
+      });
+      // A simple layer control attached to one of the maps (others already have overlays)
+      if (Object.keys(controls).length) {
+        L.control.layers({}, controls, { collapsed: false }).addTo(eqMap);
+      }
+    })();
 
-        function setInner(id, html) { document.getElementById(id).innerHTML = html; }
-
-        // Generic RSS loader (via proxy)
-        function loadRSS(url, containerId, maxItems = 7) {
-            const proxied = proxyUrl(url);
-            setInner(containerId, 'Loading...');
-            fetch(proxied)
-                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-                .then(text => {
-                    const parser = new DOMParser();
-                    const xml = parser.parseFromString(text, 'text/xml');
-                    const items = Array.from(xml.querySelectorAll('item')).slice(0, maxItems);
-                    if (items.length === 0) {
-                        setInner(containerId, '<p>No recent items.</p>');
-                        return;
-                    }
-                    let html = '';
-                    items.forEach(item => {
-                        const title = item.querySelector('title')?.textContent || '(no title)';
-                        const link = item.querySelector('link')?.textContent || '';
-                        const desc = item.querySelector('description')?.textContent || '';
-                        const pubDate = item.querySelector('pubDate')?.textContent || '';
-                        const dateAEST = pubDate ? new Date(pubDate).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }) : '';
-                        html += `<div class="item-small"><h3 style="margin:0;"><a href="${link}" target="_blank">${title}</a></h3><p class="muted" style="margin:4px 0 6px;">${dateAEST} AEST</p><div>${desc}</div></div><hr>`;
-                    });
-                    setInner(containerId, html);
-                })
-                .catch(err => {
-                    console.error('loadRSS error', url, err);
-                    setInner(containerId, `<p>Error loading feed. Open it <a href="${url}" target="_blank">here</a>. (${err.message})</p>`);
-                });
-        }
-
-        // Load X user feeds via twitrss.me (public RSS generator) - proxied
-        function loadXUser(user, containerId) {
-            const url = `https://twitrss.me/twitter_user_to_rss/?user=${encodeURIComponent(user)}`;
-            loadRSS(url, containerId, 8);
-        }
-
-        // Earthquakes: show list + Leaflet markers
-        let eqMap, bushMap;
-        function initMaps() {
-            try {
-                eqMap = L.map('map-earthquakes').setView([-25, 133], 4);
-                bushMap = L.map('map-bushfires').setView([-33.86, 151.2], 5);
-                const tiles = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-                L.tileLayer(tiles, { attribution: '&copy; OpenStreetMap contributors' }).addTo(eqMap);
-                L.tileLayer(tiles, { attribution: '&copy; OpenStreetMap contributors' }).addTo(bushMap);
-            } catch (e) {
-                console.warn('Leaflet init failed', e);
-                document.getElementById('map-earthquakes').innerText = 'Map failed to load.';
-                document.getElementById('map-bushfires').innerText = 'Map failed to load.';
-            }
-        }
-
-        function loadEarthquakes() {
-            const out = document.getElementById('earthquakes');
-            out.innerHTML = 'Loading...';
-            fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson')
-                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-                .then(data => {
-                    eqMap && eqMap.eachLayer(layer => { if (layer instanceof L.Marker) eqMap.removeLayer(layer); });
-                    let html = '';
-                    (data.features || []).forEach(feature => {
-                        const props = feature.properties;
-                        const coords = feature.geometry?.coordinates || [];
-                        const lat = coords[1], lon = coords[0];
-                        const timeAEST = props.time ? new Date(props.time).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }) : '';
-                        html += `<div class="item-small"><h3 style="margin:0;">${props.title}</h3><p class="muted" style="margin:4px 0 6px;">Magnitude: ${props.mag}, ${timeAEST} AEST</p><a href="${props.url}" target="_blank">Details</a></div><hr>`;
-                        if (lat && lon && eqMap) {
-                            const marker = L.marker([lat, lon]).addTo(eqMap);
-                            marker.bindPopup(`<strong>${props.title}</strong><br/>Mag: ${props.mag}<br/>${timeAEST} AEST<br/><a href="${props.url}" target="_blank">Details</a>`);
-                        }
-                    });
-                    out.innerHTML = html || '<p>No recent earthquakes.</p>';
-                })
-                .catch(err => {
-                    console.error('loadEarthquakes error', err);
-                    out.innerHTML = '<p>Error loading earthquake data.</p>';
-                });
-        }
-
-        // Crypto prices (Coingecko supports CORS)
-        function loadCryptoPrices() {
-            const out = document.getElementById('crypto-prices');
-            out.innerHTML = 'Loading...';
-            fetch('https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd&include_24hr_change=true')
-                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-                .then(data => {
-                    let html = '';
-                    const nowAEST = new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney' });
-                    for (const [coin, info] of Object.entries(data)) {
-                        const change = (info.usd_24h_change || 0).toFixed(2);
-                        html += `<div class="item-small"><h3 style="margin:0;">${coin.toUpperCase()}</h3><p class="muted" style="margin:4px 0 6px;">Price: $${info.usd} USD &nbsp; Change 24h: ${change}%</p><small>Updated: ${nowAEST} AEST</small></div><hr>`;
-                    }
-                    out.innerHTML = html || '<p>No data.</p>';
-                })
-                .catch(err => {
-                    console.error('loadCryptoPrices error', err);
-                    out.innerHTML = '<p>Error loading data.</p>';
-                });
-        }
-
-        // GDELT via proxy
-        function loadGDELTNews(query, containerId) {
-            const url = `https://api.gdeltproject.org/api/v2/doc/doc?query=${encodeURIComponent(query)}&mode=artlist&maxrecords=10&format=json&sort=date&lang=english`;
-            const proxied = proxyUrl(url);
-            setInner(containerId, 'Loading...');
-            fetch(proxied)
-                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
-                .then(data => {
-                    let html = '';
-                    (data.articles || []).forEach(article => {
-                        const dateAEST = article.seendate ? new Date(article.seendate).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }) : '';
-                        html += `<div class="item-small"><h3 style="margin:0;"><a href="${article.url}" target="_blank">${article.title}</a></h3><p class="muted" style="margin:4px 0 6px;">${dateAEST} AEST</p></div><hr>`;
-                    });
-                    setInner(containerId, html || '<p>No recent articles.</p>');
-                })
-                .catch(err => {
-                    console.error('loadGDELTNews error', err);
-                    setInner(containerId, `<p>Error loading data. Open raw query <a href="${url}" target="_blank">here</a>. (${err.message})</p>`);
-                });
-        }
-
-        // NSW RFS feed (RSS) -> list + attempt to add markers to bushMap
-        function loadBushfireFeed() {
-            const rssUrl = 'https://www.rfs.nsw.gov.au/feeds/majorIncidents.xml';
-            const proxied = proxyUrl(rssUrl);
-            const out = document.getElementById('bushfire-feed');
-            out.innerHTML = 'Loading...';
-            fetch(proxied)
-                .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.text(); })
-                .then(text => {
-                    const parser = new DOMParser();
-                    const xml = parser.parseFromString(text, 'text/xml');
-                    const items = Array.from(xml.querySelectorAll('item')).slice(0, 20);
-                    if (items.length === 0) {
-                        out.innerHTML = '<p>No items.</p>';
-                        return;
-                    }
-                    let html = '';
-                    // Clear bush markers (simple approach: reload map)
-                    bushMap && bushMap.eachLayer(layer => { if (layer instanceof L.Marker) bushMap.removeLayer(layer); });
-                    items.forEach(item => {
-                        const title = item.querySelector('title')?.textContent || '(no title)';
-                        const link = item.querySelector('link')?.textContent || '';
-                        const desc = item.querySelector('description')?.textContent || '';
-                        const pubDate = item.querySelector('pubDate')?.textContent || '';
-                        const dateAEST = pubDate ? new Date(pubDate).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }) : '';
-                        html += `<div class="item-small"><h3 style="margin:0;"><a href="${link}" target="_blank">${title}</a></h3><p class="muted" style="margin:4px 0 6px;">${dateAEST} AEST</p><div>${desc}</div></div><hr>`;
-
-                        // Try to find coordinates in common RSS geo tags
-                        // georss:point -> "lat lon"
-                        const georssPoint = item.getElementsByTagName('georss:point')[0] || item.getElementsByTagName('point')[0];
-                        if (georssPoint && georssPoint.textContent) {
-                            const parts = georssPoint.textContent.trim().split(/\s+/);
-                            if (parts.length >= 2) {
-                                const lat = parseFloat(parts[0]), lon = parseFloat(parts[1]);
-                                if (!isNaN(lat) && !isNaN(lon) && bushMap) {
-                                    const marker = L.marker([lat, lon]).addTo(bushMap);
-                                    marker.bindPopup(`<strong>${title}</strong><br/>${dateAEST} AEST<br/><a href="${link}" target="_blank">Details</a>`);
-                                }
-                            }
-                        } else {
-                            // fallback: look for <geo:lat> / <geo:long>
-                            const latNode = item.getElementsByTagName('geo:lat')[0] || item.getElementsByTagName('lat')[0];
-                            const lonNode = item.getElementsByTagName('geo:long')[0] || item.getElementsByTagName('long')[0];
-                            if (latNode && lonNode) {
-                                const lat = parseFloat(latNode.textContent), lon = parseFloat(lonNode.textContent);
-                                if (!isNaN(lat) && !isNaN(lon) && bushMap) {
-                                    const marker = L.marker([lat, lon]).addTo(bushMap);
-                                    marker.bindPopup(`<strong>${title}</strong><br/>${dateAEST} AEST<br/><a href="${link}" target="_blank">Details</a>`);
-                                }
-                            }
-                        }
-                    });
-                    out.innerHTML = html;
-                })
-                .catch(err => {
-                    console.error('loadBushfireFeed error', err);
-                    out.innerHTML = `<p>Error loading bushfire feed. Open it <a href="${rssUrl}" target="_blank">here</a>. (${err.message})</p>`;
-                });
-        }
-
-        function refreshFeeds() {
-            // X feeds via twitrss.me
-            loadXUser('vicemergency', 'vicemergency-feed');
-            loadXUser('BOM_au', 'bom-feed');
-            loadXUser('BBCBreaking', 'bbc-feed');
-            loadXUser('Reuters', 'reuters-feed');
-
-            // data feeds
-            loadEarthquakes();
-            loadCryptoPrices();
-            loadGDELTNews('(politics OR government OR congress)', 'politics-news');
-            loadGDELTNews('(technology OR AI OR innovation)', 'tech-news');
-            loadGDELTNews('(economy OR finance OR markets)', 'economic-news');
-            loadGDELTNews('(breaking news OR crisis OR unfolding events)', 'breaking-news');
-            loadGDELTNews('(geopolitics OR conflict OR international crisis)', 'geopolitical-news');
-            loadBushfireFeed();
-        }
-
-        // Init
-        window.addEventListener('load', () => {
-            initMaps();
-            refreshFeeds();
-            setInterval(refreshFeeds, 60000);
+    // Existing data loaders (earthquakes, bushfires) - similar to prior code
+    async function loadEarthquakes() {
+      const out = document.getElementById('earthquakes');
+      out.innerText = 'Loading...';
+      try {
+        const r = await fetch('https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/4.5_day.geojson');
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const data = await r.json();
+        eqMap.eachLayer(layer => { if (layer instanceof L.Marker) eqMap.removeLayer(layer); });
+        let html = '';
+        (data.features || []).forEach(feature => {
+          const props = feature.properties;
+          const coords = feature.geometry?.coordinates || [];
+          const lat = coords[1], lon = coords[0];
+          const timeAEST = props.time ? new Date(props.time).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }) : '';
+          html += `<div><strong>${props.title}</strong><div class="muted">Mag: ${props.mag} • ${timeAEST} AEST</div><a href="${props.url}" target="_blank">Details</a></div><hr>`;
+          if (lat && lon) {
+            const m = L.marker([lat, lon]).addTo(eqMap);
+            m.bindPopup(`<strong>${props.title}</strong><br/>Mag: ${props.mag}<br/>${timeAEST} AEST<br/><a href="${props.url}" target="_blank">Details</a>`);
+          }
         });
-    </script>
+        out.innerHTML = html || '<p>No recent earthquakes.</p>';
+      } catch (err) {
+        console.error('loadEarthquakes error', err);
+        out.innerHTML = '<p>Error loading earthquake data.</p>';
+      }
+    }
+
+    async function loadBushfires() {
+      const out = document.getElementById('bushfire-list');
+      out.innerText = 'Loading...';
+      const rssUrl = 'https://www.rfs.nsw.gov.au/feeds/majorIncidents.xml';
+      try {
+        const r = await fetch(proxyUrl(rssUrl));
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const text = await r.text();
+        const parser = new DOMParser();
+        const xml = parser.parseFromString(text, 'text/xml');
+        const items = Array.from(xml.querySelectorAll('item')).slice(0, 20);
+        let html = '';
+        bushMap.eachLayer(layer => { if (layer instanceof L.Marker) bushMap.removeLayer(layer); });
+        items.forEach(item => {
+          const title = item.querySelector('title')?.textContent || '(no title)';
+          const link = item.querySelector('link')?.textContent || '';
+          const pubDate = item.querySelector('pubDate')?.textContent || '';
+          const dateAEST = pubDate ? new Date(pubDate).toLocaleString('en-AU', { timeZone: 'Australia/Sydney' }) : '';
+          html += `<div><strong><a href="${link}" target="_blank">${title}</a></strong><div class="muted">${dateAEST} AEST</div><div>${item.querySelector('description')?.textContent || ''}</div></div><hr>`;
+
+          // try georss:point
+          const georss = item.getElementsByTagName('georss:point')[0] || item.getElementsByTagName('point')[0];
+          if (georss && georss.textContent) {
+            const parts = georss.textContent.trim().split(/\s+/);
+            if (parts.length >= 2) {
+              const lat = parseFloat(parts[0]), lon = parseFloat(parts[1]);
+              if (!isNaN(lat) && !isNaN(lon)) {
+                const m = L.marker([lat, lon]).addTo(bushMap);
+                m.bindPopup(`<strong>${title}</strong><br/>${dateAEST} AEST<br/><a href="${link}" target="_blank">Details</a>`);
+              }
+            }
+          }
+        });
+        out.innerHTML = html || '<p>No bushfire items.</p>';
+      } catch (err) {
+        console.error('loadBushfires error', err);
+        out.innerHTML = `<p>Error loading bushfire feed. Open it <a href="${rssUrl}" target="_blank">here</a>. (${err.message})</p>`;
+      }
+    }
+
+    // start
+    window.addEventListener('load', () => {
+      loadEarthquakes();
+      loadBushfires();
+      setInterval(() => { loadEarthquakes(); loadBushfires(); }, 60000);
+    });
+  </script>
 </body>
 </html>

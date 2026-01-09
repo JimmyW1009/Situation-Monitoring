@@ -5,14 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monitoring Dashboard</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
+        body { font-family: Arial, sans-serif; margin: 20px; background: #000000; color: #FFFFFF; }
         section { margin-bottom: 40px; }
-        .feed-container { border: 1px solid #ccc; padding: 10px; margin: 10px 0; height: 400px; overflow-y: auto; }
+        .feed-container { border: 1px solid #FFFFFF; padding: 10px; margin: 10px 0; height: 400px; overflow-y: auto; background: #111111; }
         .twitter-timeline { max-width: 100%; height: 350px; }
         .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .tile { border: 1px solid #ddd; padding: 10px; background: #f9f9f9; }
+        .tile { border: 1px solid #FFFFFF; padding: 10px; background: #333333; }
         .tile img { width: 50px; height: 50px; border-radius: 50%; display: block; margin: 0 auto 10px; }
         iframe { width: 100%; height: 400px; }
+        h1, h2, h3, h4 { color: #FFFFFF; }
+        a { color: #D3D3D3; }
+        p { color: #FFFFFF; }
+        .span-two { grid-column: span 2; }
     </style>
 </head>
 <body>
@@ -78,91 +82,23 @@
             </div>
         </div>
     </section>
-    
-    <section id="rss-feeds">
-        <h2>Government and Worldwide RSS Feeds</h2>
-        <div class="grid">
-            <div class="tile">
-                <h4>VicEmergency Incidents</h4>
-                <div id="vic-incidents" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>BOM Victoria Warnings</h4>
-                <div id="bom-warnings" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>UN Top Stories</h4>
-                <div id="un-top" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>NYT World News</h4>
-                <div id="nyt-world" class="feed-container"></div>
-            </div>
-            <div class="tile">
-                <h4>Guardian World News</h4>
-                <div id="guardian-world" class="feed-container"></div>
-            </div>
-        </div>
-    </section>
 
     <section id="embedded-feeds">
         <h2>Embedded Live Feeds</h2>
         <div class="grid">
-            <div class="tile">
-                <h4>Live VicEmergency Feed</h4>
+            <div class="tile span-two">
+                <h4>VicEmergency Interactive Map</h4>
                 <iframe src="https://emergency.vic.gov.au/" height="400" width="100%" frameborder="0"></iframe>
                 <p>Note: If the embed doesn't load due to site restrictions, visit <a href="https://emergency.vic.gov.au/" target="_blank">VicEmergency</a> directly.</p>
             </div>
-            <div class="tile">
-                <h4>Live Weather Alerts for Australia (BOM)</h4>
-                <iframe src="http://www.bom.gov.au/australia/warnings/" height="400" width="100%" frameborder="0"></iframe>
-                <p>Note: If the embed doesn't load due to site restrictions, visit <a href="http://www.bom.gov.au/australia/warnings/" target="_blank">BOM Australia Warnings</a> directly.</p>
-            </div>
-            <div class="tile">
-                <h4>VicEmergency Interactive Map</h4>
-                <iframe src="https://emergency.vic.gov.au/" height="400" width="100%" frameborder="0"></iframe>
-                <p>Note: This embeds the main VicEmergency page which includes the interactive map. If it doesn't load, visit <a href="https://emergency.vic.gov.au/" target="_blank">directly</a>.</p>
+            <div class="tile span-two">
+                <h4>Australian Wide Weather Radar</h4>
+                <iframe src="http://www.bom.gov.au/australia/radar/" height="400" width="100%" frameborder="0"></iframe>
+                <p>Note: If the embed doesn't load due to site restrictions, visit <a href="http://www.bom.gov.au/australia/radar/" target="_blank">BOM Australia Radar</a> directly.</p>
             </div>
         </div>
     </section>
     
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-    <script>
-        function loadRSS(url, containerId) {
-            const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
-            fetch(proxy)
-                .then(response => response.json())
-                .then(data => {
-                    const parser = new DOMParser();
-                    const xml = parser.parseFromString(data.contents, 'text/xml');
-                    const items = xml.querySelectorAll('item');
-                    let html = '';
-                    items.forEach(item => {
-                        const title = item.querySelector('title')?.textContent || '';
-                        const link = item.querySelector('link')?.textContent || '';
-                        const desc = item.querySelector('description')?.textContent || '';
-                        const pubDate = item.querySelector('pubDate')?.textContent || '';
-                        html += `<div><h3><a href="${link}" target="_blank">${title}</a></h3><p>${desc}</p><small>${pubDate}</small></div><hr>`;
-                    });
-                    document.getElementById(containerId).innerHTML = html || '<p>No recent items.</p>';
-                })
-                .catch(error => {
-                    console.error(error);
-                    document.getElementById(containerId).innerHTML = '<p>Error loading feed.</p>';
-                });
-        }
-
-        // Load feeds on page load and refresh every 5 minutes
-        function refreshFeeds() {
-            loadRSS('https://data.emergency.vic.gov.au/Show?pageId=getIncidentRSS', 'vic-incidents');
-            loadRSS('https://www.bom.gov.au/fwo/IDZ00059.warnings_vic.xml', 'bom-warnings');
-            loadRSS('https://news.un.org/feed/subscribe/en/news/all/rss.xml', 'un-top');
-            loadRSS('https://rss.nytimes.com/services/xml/rss/nyt/World.xml', 'nyt-world');
-            loadRSS('https://www.theguardian.com/world/rss', 'guardian-world');
-        }
-
-        window.onload = refreshFeeds;
-        setInterval(refreshFeeds, 300000); // 5 minutes
-    </script>
 </body>
 </html>

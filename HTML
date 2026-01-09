@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monitoring Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        section { margin-bottom: 40px; }
+        .feed-container { border: 1px solid #ccc; padding: 10px; margin: 10px 0; }
+        .twitter-timeline { max-width: 500px; }
+    </style>
+</head>
+<body>
+    <h1>Monitoring Dashboard</h1>
+    
+    <section id="x-feeds">
+        <h2>X Feeds</h2>
+        <h3>Local (Victoria/Australia)</h3>
+        <div>
+            <h4>VicEmergency (@vicemergency)</h4>
+            <a class="twitter-timeline" data-height="600" href="https://twitter.com/vicemergency?ref_src=twsrc%5Etfw">Tweets by vicemergency</a>
+        </div>
+        <div>
+            <h4>Bureau of Meteorology (@BOM_au)</h4>
+            <a class="twitter-timeline" data-height="600" href="https://twitter.com/BOM_au?ref_src=twsrc%5Etfw">Tweets by BOM_au</a>
+        </div>
+        
+        <h3>Worldwide</h3>
+        <div>
+            <h4>BBC Breaking News (@BBCBreaking)</h4>
+            <a class="twitter-timeline" data-height="600" href="https://twitter.com/BBCBreaking?ref_src=twsrc%5Etfw">Tweets by BBCBreaking</a>
+        </div>
+        <div>
+            <h4>Reuters (@Reuters)</h4>
+            <a class="twitter-timeline" data-height="600" href="https://twitter.com/Reuters?ref_src=twsrc%5Etfw">Tweets by Reuters</a>
+        </div>
+        <div>
+            <h4>The New York Times (@nytimes)</h4>
+            <a class="twitter-timeline" data-height="600" href="https://twitter.com/nytimes?ref_src=twsrc%5Etfw">Tweets by nytimes</a>
+        </div>
+        <div>
+            <h4>CNN Breaking News (@cnnbrk)</h4>
+            <a class="twitter-timeline" data-height="600" href="https://twitter.com/cnnbrk?ref_src=twsrc%5Etfw">Tweets by cnnbrk</a>
+        </div>
+        <div>
+            <h4>Associated Press (@AP)</h4>
+            <a class="twitter-timeline" data-height="600" href="https://twitter.com/AP?ref_src=twsrc%5Etfw">Tweets by AP</a>
+        </div>
+    </section>
+    
+    <section id="rss-feeds">
+        <h2>Government and Worldwide RSS Feeds</h2>
+        <h3>Local (Victoria/Australia)</h3>
+        <div>
+            <h4>VicEmergency Incidents</h4>
+            <div id="vic-incidents" class="feed-container"></div>
+        </div>
+        <div>
+            <h4>BOM Victoria Warnings</h4>
+            <div id="bom-warnings" class="feed-container"></div>
+        </div>
+        
+        <h3>Worldwide</h3>
+        <div>
+            <h4>UN Top Stories</h4>
+            <div id="un-top" class="feed-container"></div>
+        </div>
+        <div>
+            <h4>NYT World News</h4>
+            <div id="nyt-world" class="feed-container"></div>
+        </div>
+        <div>
+            <h4>Guardian World News</h4>
+            <div id="guardian-world" class="feed-container"></div>
+        </div>
+    </section>
+    
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <script>
+        function loadRSS(url, containerId) {
+            const proxy = 'https://api.allorigins.win/get?url=' + encodeURIComponent(url);
+            fetch(proxy)
+                .then(response => response.json())
+                .then(data => {
+                    const parser = new DOMParser();
+                    const xml = parser.parseFromString(data.contents, 'text/xml');
+                    const items = xml.querySelectorAll('item');
+                    let html = '';
+                    items.forEach(item => {
+                        const title = item.querySelector('title')?.textContent || '';
+                        const link = item.querySelector('link')?.textContent || '';
+                        const desc = item.querySelector('description')?.textContent || '';
+                        const pubDate = item.querySelector('pubDate')?.textContent || '';
+                        html += `<div><h3><a href="${link}" target="_blank">${title}</a></h3><p>${desc}</p><small>${pubDate}</small></div><hr>`;
+                    });
+                    document.getElementById(containerId).innerHTML = html || '<p>No recent items.</p>';
+                })
+                .catch(error => {
+                    console.error(error);
+                    document.getElementById(containerId).innerHTML = '<p>Error loading feed.</p>';
+                });
+        }
+
+        // Load feeds on page load
+        window.onload = function() {
+            loadRSS('https://data.emergency.vic.gov.au/Show?pageId=getIncidentRSS', 'vic-incidents');
+            loadRSS('https://www.bom.gov.au/fwo/IDZ00059.warnings_vic.xml', 'bom-warnings');
+            loadRSS('https://news.un.org/feed/subscribe/en/news/all/rss.xml', 'un-top');
+            loadRSS('https://rss.nytimes.com/services/xml/rss/nyt/World.xml', 'nyt-world');
+            loadRSS('https://www.theguardian.com/world/rss', 'guardian-world');
+        };
+    </script>
+</body>
+</html>

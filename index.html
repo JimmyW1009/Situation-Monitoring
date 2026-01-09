@@ -93,6 +93,10 @@
                 <h4>Geopolitical Events</h4>
                 <div id="geopolitical-news" class="feed-container"></div>
             </div>
+            <div class="tile">
+                <h4>Australian Bushfire Feed (NSW RFS)</h4>
+                <div id="bushfire-feed" class="feed-container"></div>
+            </div>
         </div>
     </section>
 
@@ -105,9 +109,9 @@
                 <p>Note: If the embed doesn't load due to site restrictions, visit <a href="https://emergency.vic.gov.au/" target="_blank">VicEmergency</a> directly.</p>
             </div>
             <div class="tile span-two">
-                <h4>Australian Wide Weather Radar (The Weather Chaser)</h4>
-                <iframe src="https://theweatherchaser.com/radar/" height="400" width="100%" frameborder="0"></iframe>
-                <p>Note: If the embed doesn't load due to site restrictions, visit <a href="https://theweatherchaser.com/radar/" target="_blank">The Weather Chaser Radar</a> directly.</p>
+                <h4>Australian Wide Weather Map (The Weather Chaser)</h4>
+                <iframe src="https://theweatherchaser.com/map" height="400" width="100%" frameborder="0"></iframe>
+                <p>Note: If the embed doesn't load due to site restrictions, visit <a href="https://theweatherchaser.com/map" target="_blank">The Weather Chaser Map</a> directly.</p>
             </div>
         </div>
     </section>
@@ -190,13 +194,14 @@
 
         // Load feeds on page load and refresh every 5 minutes
         function refreshFeeds() {
-            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=vicemergency', 'vicemergency-feed');
-            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=BOM_au', 'bom-au-feed');
-            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=BBCBreaking', 'bbcbreaking-feed');
-            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=Reuters', 'reuters-feed');
-            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=nytimes', 'nytimes-feed');
-            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=cnnbrk', 'cnnbrk-feed');
-            loadRSS('https://twitrss.me/twitter_user_to_rss/?user=AP', 'ap-feed');
+            loadRSS('https://openrss.org/twitter.com/vicemergency', 'vicemergency-feed');
+            loadRSS('https://openrss.org/twitter.com/BOM_au', 'bom-au-feed');
+            loadRSS('https://openrss.org/twitter.com/BBCBreaking', 'bbcbreaking-feed');
+            loadRSS('https://openrss.org/twitter.com/Reuters', 'reuters-feed');
+            loadRSS('https://openrss.org/twitter.com/nytimes', 'nytimes-feed');
+            loadRSS('https://openrss.org/twitter.com/cnnbrk', 'cnnbrk-feed');
+            loadRSS('https://openrss.org/twitter.com/AP', 'ap-feed');
+            loadRSS('https://www.rfs.nsw.gov.au/feeds/majorIncidents.xml', 'bushfire-feed');
             loadEarthquakes();
             loadCryptoPrices();
             loadGDELTNews('(politics OR government OR congress)', 'politics-news');
